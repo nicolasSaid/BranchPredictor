@@ -393,25 +393,25 @@ int main(int argc, char *argv[]) {
 
     vector<string> inputs;
     parse(argv[1], inputs);
-    // alwaysTakenPredictor(argv[2], inputs);
-    // alwaysNotTakenPredictor(argv[2], inputs);
-    // int sizes[] = {16,32,128,256,512,1024,2048};
+    alwaysTakenPredictor(argv[2], inputs);
+    alwaysNotTakenPredictor(argv[2], inputs);
+    int sizes[] = {16,32,128,256,512,1024,2048};
 
-    // for(int i = 0; i < sizeof(sizes)/sizeof(int); i++){
-    //     bimodalOneBitPredictor(argv[2], inputs, sizes[i]);
-    // }
-    // cout<<endl;
-    // for(int i = 0; i < sizeof(sizes)/sizeof(int); i++){
-    //     bimodalTwoBitPredictor(argv[2], inputs, sizes[i]);
-    // }
-    // cout<<endl;
+    for(int i = 0; i < sizeof(sizes)/sizeof(int); i++){
+        bimodalOneBitPredictor(argv[2], inputs, sizes[i]);
+    }
+    cout<<endl;
+    for(int i = 0; i < sizeof(sizes)/sizeof(int); i++){
+        bimodalTwoBitPredictor(argv[2], inputs, sizes[i]);
+    }
+    cout<<endl;
 
-    // for(int i = 3; i <= 11; i++){
-    //     gsharePredictor(argv[2], inputs, i);
-    // }
-    // cout<<endl;
+    for(int i = 3; i <= 11; i++){
+        gsharePredictor(argv[2], inputs, i);
+    }
+    cout<<endl;
 
-    //tournamentPredictor(argv[2], inputs);
+    tournamentPredictor(argv[2], inputs);
 
     BTB(argv[2], inputs);
 
