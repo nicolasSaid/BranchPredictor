@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 #include<fstream>
 #include<sstream>
 #include<string>
@@ -32,7 +33,7 @@ void parse(string in, vector<string> &x){
     }
 }
 
-void alwaysTakenPredictor(string output, const vector<string> &input){
+void alwaysTakenPredictor(ofstream &file, const vector<string> &input){
     int branchCommands = input.size();
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -49,10 +50,10 @@ void alwaysTakenPredictor(string output, const vector<string> &input){
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
+    file<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
 }
 
-void alwaysNotTakenPredictor(string output, const vector<string> &input){
+void alwaysNotTakenPredictor(ofstream &file, const vector<string> &input){
     int branchCommands = input.size();
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -69,10 +70,10 @@ void alwaysNotTakenPredictor(string output, const vector<string> &input){
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
+    file<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
 }
 
-void bimodalOneBitPredictor(string output, const vector<string> &input, unsigned int tableSize){
+void bimodalOneBitPredictor(ofstream &file, const vector<string> &input, unsigned int tableSize){
     int branchCommands = input.size();
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -106,10 +107,10 @@ void bimodalOneBitPredictor(string output, const vector<string> &input, unsigned
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<"; ";
+    file<<correctBranchPredictions<<","<<branchCommands<<"; ";
 }
 
-void bimodalTwoBitPredictor(string output, const vector<string> &input, unsigned int tableSize){
+void bimodalTwoBitPredictor(ofstream &file, const vector<string> &input, unsigned int tableSize){
     int branchCommands = input.size();
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -149,10 +150,10 @@ void bimodalTwoBitPredictor(string output, const vector<string> &input, unsigned
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<"; ";
+    file<<correctBranchPredictions<<","<<branchCommands<<"; ";
 }
 
-void gsharePredictor(string output, const vector<string> &input, unsigned int globalBits){
+void gsharePredictor(ofstream &file, const vector<string> &input, unsigned int globalBits){
     int branchCommands = input.size();
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -208,10 +209,10 @@ void gsharePredictor(string output, const vector<string> &input, unsigned int gl
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<"; ";
+    file<<correctBranchPredictions<<","<<branchCommands<<"; ";
 }
 
-void tournamentPredictor(string output, const vector<string> &input){
+void tournamentPredictor(ofstream &file, const vector<string> &input){
     int branchCommands = input.size();
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -333,11 +334,11 @@ void tournamentPredictor(string output, const vector<string> &input){
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;;
+    file<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;;
 }
 
 
-void BTB(string output, const vector<string> &input){
+void BTB(ofstream &file, const vector<string> &input){
     int branchCommands = 0;
     int correctBranchPredictions = 0;
     unsigned long long addr;
@@ -383,7 +384,7 @@ void BTB(string output, const vector<string> &input){
     }
 
     //change to file output later
-    cout<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
+    file<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -391,28 +392,32 @@ int main(int argc, char *argv[]) {
         cout<<"Incorrect number of arguments"<<endl;
     }
 
+    ofstream file;
+    file.open(argv[2]);
     vector<string> inputs;
     parse(argv[1], inputs);
-    alwaysTakenPredictor(argv[2], inputs);
-    alwaysNotTakenPredictor(argv[2], inputs);
+    alwaysTakenPredictor(file, inputs);
+    alwaysNotTakenPredictor(file, inputs);
     int sizes[] = {16,32,128,256,512,1024,2048};
 
     for(int i = 0; i < sizeof(sizes)/sizeof(int); i++){
-        bimodalOneBitPredictor(argv[2], inputs, sizes[i]);
+        bimodalOneBitPredictor(file, inputs, sizes[i]);
     }
-    cout<<endl;
+    file<<endl;
     for(int i = 0; i < sizeof(sizes)/sizeof(int); i++){
-        bimodalTwoBitPredictor(argv[2], inputs, sizes[i]);
+        bimodalTwoBitPredictor(file, inputs, sizes[i]);
     }
-    cout<<endl;
+    file<<endl;
 
     for(int i = 3; i <= 11; i++){
-        gsharePredictor(argv[2], inputs, i);
+        gsharePredictor(file, inputs, i);
     }
-    cout<<endl;
+    file<<endl;
 
-    tournamentPredictor(argv[2], inputs);
+    tournamentPredictor(file, inputs);
 
-    BTB(argv[2], inputs);
+    BTB(file, inputs);
+    cout<<"Execution Complete"<<endl;
+    file.close();
 
 }
