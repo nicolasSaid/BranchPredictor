@@ -75,13 +75,7 @@ void alwaysNotTakenPredictor(ofstream &file, const vector<string> &input){
 
 void bimodalOneBitPredictor(ofstream &file, const vector<string> &input){
     int branchCommands = input.size();
-    int correctBranchPredictions1 = 0;
-    int correctBranchPredictions2 = 0;
-    int correctBranchPredictions3 = 0;
-    int correctBranchPredictions4 = 0;
-    int correctBranchPredictions5 = 0;
-    int correctBranchPredictions6 = 0;
-    int correctBranchPredictions7 = 0;
+    int correctBranchPredictions[] = {0,0,0,0,0,0,0};
     unsigned long long addr;
     unsigned long long target;
 
@@ -133,106 +127,101 @@ void bimodalOneBitPredictor(ofstream &file, const vector<string> &input){
     }
 
     string behavior;
+    int index[7] = {0,0,0,0,0,0,0};
     for(int i = 0; i < input.size(); i++){
         // Now we have to parse the line into it's two pieces
         stringstream s(input.at(i));
         s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
-        unsigned int index1 = addr % 16;
-        unsigned int index2 = addr % 32;
-        unsigned int index3 = addr % 128;
-        unsigned int index4 = addr % 256;
-        unsigned int index5 = addr % 512;
-        unsigned int index6 = addr % 1024;
-        unsigned int index7 = addr % 2048;
+        index[0] = addr % 16;
+        index[1] = addr % 32;
+        index[2] = addr % 128;
+        index[3] = addr % 256;
+        index[4] = addr % 512;
+        index[5] = addr % 1024;
+        index[6] = addr % 2048;
         if(behavior == "NT"){
-            if(table1[index1] == 0){
-                correctBranchPredictions1++;
+            if(table1[index[0]] == 0){
+                correctBranchPredictions[0]++;
             }else{
-                table1[index1] = 0;
+                table1[index[0]] = 0;
             }
-            if(table2[index2] == 0){
-                correctBranchPredictions2++;
+            if(table2[index[1]] == 0){
+                correctBranchPredictions[1]++;
             }else{
-                table2[index2] = 0;
+                table2[index[1]] = 0;
             }
-            if(table3[index3] == 0){
-                correctBranchPredictions3++;
+            if(table3[index[2]] == 0){
+                correctBranchPredictions[2]++;
             }else{
-                table3[index3] = 0;
+                table3[index[2]] = 0;
             }
-            if(table4[index4] == 0){
-                correctBranchPredictions4++;
+            if(table4[index[3]] == 0){
+                correctBranchPredictions[3]++;
             }else{
-                table4[index4] = 0;
+                table4[index[3]] = 0;
             }
-            if(table5[index5] == 0){
-                correctBranchPredictions5++;
+            if(table5[index[4]] == 0){
+                correctBranchPredictions[4]++;
             }else{
-                table5[index5] = 0;
+                table5[index[4]] = 0;
             }
-            if(table6[index6] == 0){
-                correctBranchPredictions6++;
+            if(table6[index[5]] == 0){
+                correctBranchPredictions[5]++;
             }else{
-                table6[index6] = 0;
+                table6[index[5]] = 0;
             }
-            if(table7[index7] == 0){
-                correctBranchPredictions7++;
+            if(table7[index[6]] == 0){
+                correctBranchPredictions[6]++;
             }else{
-                table7[index7] = 0;
+                table7[index[6]] = 0;
             }
         }else{
-            if(table1[index1] == 1){
-                correctBranchPredictions1++;
+            if(table1[index[0]] == 1){
+                correctBranchPredictions[0]++;
             }else{
-                table1[index1] = 1;
+                table1[index[0]] = 1;
             }
-            if(table2[index2] == 1){
-                correctBranchPredictions2++;
+            if(table2[index[1]] == 1){
+                correctBranchPredictions[1]++;
             }else{
-                table2[index2] = 1;
+                table2[index[1]] = 1;
             }
-            if(table3[index3] == 1){
-                correctBranchPredictions3++;
+            if(table3[index[2]] == 1){
+                correctBranchPredictions[2]++;
             }else{
-                table3[index3] = 1;
+                table3[index[2]] = 1;
             }
-            if(table4[index4] == 1){
-                correctBranchPredictions4++;
+            if(table4[index[3]] == 1){
+                correctBranchPredictions[3]++;
             }else{
-                table4[index4] = 1;
+                table4[index[3]] = 1;
             }
-            if(table5[index5] == 1){
-                correctBranchPredictions5++;
+            if(table5[index[4]] == 1){
+                correctBranchPredictions[4]++;
             }else{
-                table5[index5] = 1;
+                table5[index[4]] = 1;
             }
-            if(table6[index6] == 1){
-                correctBranchPredictions6++;
+            if(table6[index[5]] == 1){
+                correctBranchPredictions[5]++;
             }else{
-                table6[index6] = 1;
+                table6[index[5]] = 1;
             }
-            if(table7[index7] == 1){
-                correctBranchPredictions7++;
+            if(table7[index[6]] == 1){
+                correctBranchPredictions[6]++;
             }else{
-                table7[index7] = 1;
+                table7[index[6]] = 1;
             }
         }
     }
 
     //change to file output later
-    file<<correctBranchPredictions1<<","<<branchCommands<<"; "<<correctBranchPredictions2<<","<<branchCommands<<"; "<<correctBranchPredictions3<<","<<branchCommands<<"; "<<correctBranchPredictions4<<","<<branchCommands<<"; "<<correctBranchPredictions5<<","<<branchCommands<<"; "<<correctBranchPredictions6<<","<<branchCommands<<"; "<<correctBranchPredictions7<<","<<branchCommands<<";";
+    file<<correctBranchPredictions[0]<<","<<branchCommands<<"; "<<correctBranchPredictions[1]<<","<<branchCommands<<"; "<<correctBranchPredictions[2]<<","<<branchCommands<<"; "<<correctBranchPredictions[3]<<","<<branchCommands<<"; "<<correctBranchPredictions[4]<<","<<branchCommands<<"; "<<correctBranchPredictions[5]<<","<<branchCommands<<"; "<<correctBranchPredictions[6]<<","<<branchCommands<<";";
 }
 
 void bimodalTwoBitPredictor(ofstream &file, const vector<string> &input){
     int branchCommands = input.size();
-    int correctBranchPredictions1 = 0;
-    int correctBranchPredictions2 = 0;
-    int correctBranchPredictions3 = 0;
-    int correctBranchPredictions4 = 0;
-    int correctBranchPredictions5 = 0;
-    int correctBranchPredictions6 = 0;
-    int correctBranchPredictions7 = 0;
+    int correctBranchPredictions[7] = {0,0,0,0,0,0,0};
     unsigned long long addr;
     unsigned long long target;
 
@@ -284,197 +273,258 @@ void bimodalTwoBitPredictor(ofstream &file, const vector<string> &input){
     }
 
     string behavior;
+    unsigned int index[7];
     for(int i = 0; i < input.size(); i++){
         // Now we have to parse the line into it's two pieces
         stringstream s(input.at(i));
         s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
-        unsigned int index1 = addr % 16;
-        unsigned int index2 = addr % 32;
-        unsigned int index3 = addr % 128;
-        unsigned int index4 = addr % 256;
-        unsigned int index5 = addr % 512;
-        unsigned int index6 = addr % 1024;
-        unsigned int index7 = addr % 2048;
+        index[0] = addr % 16;
+        index[1] = addr % 32;
+        index[2] = addr % 128;
+        index[3] = addr % 256;
+        index[4] = addr % 512;
+        index[5] = addr % 1024;
+        index[6] = addr % 2048;
         if(behavior == "NT"){
-            if(table1[index1] == 0 || table1[index1] == 1){
-                correctBranchPredictions1++;
-                if(table1[index1] == 1){
-                    table1[index1]--;
+            if(table1[index[0]] == 0 || table1[index[0]] == 1){
+                correctBranchPredictions[0]++;
+                if(table1[index[0]] == 1){
+                    table1[index[0]]--;
                 }
             }else{
-                table1[index1]--;
+                table1[index[0]]--;
             }
-            if(table2[index2] == 0 || table2[index2] == 1){
-                correctBranchPredictions2++;
-                if(table2[index2] == 1){
-                    table2[index2]--;
+            if(table2[index[1]] == 0 || table2[index[1]] == 1){
+                correctBranchPredictions[1]++;
+                if(table2[index[1]] == 1){
+                    table2[index[1]]--;
                 }
             }else{
-                table2[index2]--;
+                table2[index[1]]--;
             }
-            if(table3[index3] == 0 || table3[index3] == 1){
-                correctBranchPredictions3++;
-                if(table3[index3] == 1){
-                    table3[index3]--;
+            if(table3[index[2]] == 0 || table3[index[2]] == 1){
+                correctBranchPredictions[2]++;
+                if(table3[index[2]] == 1){
+                    table3[index[2]]--;
                 }
             }else{
-                table3[index3]--;
+                table3[index[2]]--;
             }
-            if(table4[index4] == 0 || table4[index4] == 1){
-                correctBranchPredictions4++;
-                if(table4[index4] == 1){
-                    table4[index4]--;
+            if(table4[index[3]] == 0 || table4[index[3]] == 1){
+                correctBranchPredictions[3]++;
+                if(table4[index[3]] == 1){
+                    table4[index[3]]--;
                 }
             }else{
-                table4[index4]--;
+                table4[index[3]]--;
             }
-            if(table5[index5] == 0 || table5[index5] == 1){
-                correctBranchPredictions5++;
-                if(table5[index5] == 1){
-                    table5[index5]--;
+            if(table5[index[4]] == 0 || table5[index[4]] == 1){
+                correctBranchPredictions[4]++;
+                if(table5[index[4]] == 1){
+                    table5[index[4]]--;
                 }
             }else{
-                table5[index5]--;
+                table5[index[4]]--;
             }
-            if(table6[index6] == 0 || table6[index6] == 1){
-                correctBranchPredictions6++;
-                if(table6[index6] == 1){
-                    table6[index6]--;
+            if(table6[index[5]] == 0 || table6[index[5]] == 1){
+                correctBranchPredictions[5]++;
+                if(table6[index[5]] == 1){
+                    table6[index[5]]--;
                 }
             }else{
-                table6[index6]--;
+                table6[index[5]]--;
             }
-            if(table7[index7] == 0 || table7[index7] == 1){
-                correctBranchPredictions7++;
-                if(table7[index7] == 1){
-                    table7[index7]--;
+            if(table7[index[6]] == 0 || table7[index[6]] == 1){
+                correctBranchPredictions[6]++;
+                if(table7[index[6]] == 1){
+                    table7[index[6]]--;
                 }
             }else{
-                table7[index7]--;
+                table7[index[6]]--;
             }
         }else{
-            if(table1[index1] == 2 || table1[index1] == 3){
-                correctBranchPredictions1++;
-                if(table1[index1] == 2){
-                    table1[index1]++;
+            if(table1[index[0]] == 2 || table1[index[0]] == 3){
+                correctBranchPredictions[0]++;
+                if(table1[index[0]] == 2){
+                    table1[index[0]]++;
                 }
             }else{
-                table1[index1]++;
+                table1[index[0]]++;
             }
-            if(table2[index2] == 2 || table2[index2] == 3){
-                correctBranchPredictions2++;
-                if(table2[index2] == 2){
-                    table2[index2]++;
+            if(table2[index[1]] == 2 || table2[index[1]] == 3){
+                correctBranchPredictions[1]++;
+                if(table2[index[1]] == 2){
+                    table2[index[1]]++;
                 }
             }else{
-                table2[index2]++;
+                table2[index[1]]++;
             }
-            if(table3[index3] == 2 || table3[index3] == 3){
-                correctBranchPredictions3++;
-                if(table3[index3] == 2){
-                    table3[index3]++;
+            if(table3[index[2]] == 2 || table3[index[2]] == 3){
+                correctBranchPredictions[2]++;
+                if(table3[index[2]] == 2){
+                    table3[index[2]]++;
                 }
             }else{
-                table3[index3]++;
+                table3[index[2]]++;
             }
-            if(table4[index4] == 2 || table4[index4] == 3){
-                correctBranchPredictions4++;
-                if(table4[index4] == 2){
-                    table4[index4]++;
+            if(table4[index[3]] == 2 || table4[index[3]] == 3){
+                correctBranchPredictions[3]++;
+                if(table4[index[3]] == 2){
+                    table4[index[3]]++;
                 }
             }else{
-                table4[index4]++;
+                table4[index[3]]++;
             }
-            if(table5[index5] == 2 || table5[index5] == 3){
-                correctBranchPredictions5++;
-                if(table5[index5] == 2){
-                    table5[index5]++;
+            if(table5[index[4]] == 2 || table5[index[4]] == 3){
+                correctBranchPredictions[4]++;
+                if(table5[index[4]] == 2){
+                    table5[index[4]]++;
                 }
             }else{
-                table5[index5]++;
+                table5[index[4]]++;
             }
-            if(table6[index6] == 2 || table6[index6] == 3){
-                correctBranchPredictions6++;
-                if(table6[index6] == 2){
-                    table6[index6]++;
+            if(table6[index[5]] == 2 || table6[index[5]] == 3){
+                correctBranchPredictions[5]++;
+                if(table6[index[5]] == 2){
+                    table6[index[5]]++;
                 }
             }else{
-                table6[index6]++;
+                table6[index[5]]++;
             }
-            if(table7[index7] == 2 || table7[index7] == 3){
-                correctBranchPredictions7++;
-                if(table7[index7] == 2){
-                    table7[index7]++;
+            if(table7[index[6]] == 2 || table7[index[6]] == 3){
+                correctBranchPredictions[6]++;
+                if(table7[index[6]] == 2){
+                    table7[index[6]]++;
                 }
             }else{
-                table7[index7]++;
+                table7[index[6]]++;
             }
         }
     }
 
     //change to file output later
-    file<<correctBranchPredictions1<<","<<branchCommands<<"; "<<correctBranchPredictions2<<","<<branchCommands<<"; "<<correctBranchPredictions3<<","<<branchCommands<<"; "<<correctBranchPredictions4<<","<<branchCommands<<"; "<<correctBranchPredictions5<<","<<branchCommands<<"; "<<correctBranchPredictions6<<","<<branchCommands<<"; "<<correctBranchPredictions7<<","<<branchCommands<<";";
+    file<<correctBranchPredictions[0]<<","<<branchCommands<<"; "<<correctBranchPredictions[1]<<","<<branchCommands<<"; "<<correctBranchPredictions[2]<<","<<branchCommands<<"; "<<correctBranchPredictions[3]<<","<<branchCommands<<"; "<<correctBranchPredictions[4]<<","<<branchCommands<<"; "<<correctBranchPredictions[5]<<","<<branchCommands<<"; "<<correctBranchPredictions[6]<<","<<branchCommands<<";";
 }
 
-void gsharePredictor(ofstream &file, const vector<string> &input, unsigned int globalBits){
+void gsharePredictor(ofstream &file, const vector<string> &input){
     int branchCommands = input.size();
-    int correctBranchPredictions = 0;
+    int correctBranchPredictions[9] = {0,0,0,0,0,0,0,0};
     unsigned long long addr;
     unsigned long long target;
 
-    unsigned int globalHist = 0;
-    unsigned int len = 0;
+    unsigned int globalHist[9] = {0,0,0,0,0,0,0,0,0};
+    unsigned int len[9] = {0,0,0,0,0,0,0,0,0};
 
-    for(int i = 0; i < globalBits; i++){
-        len = len<<1;
-        len++;
+    for(int i = 0; i < 11; i++){
+        if(i<3){
+            for(int i = 0; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<4){
+            for(int i = 1; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<5){
+            for(int i = 2; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<6){
+            for(int i = 3; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<7){
+            for(int i = 4; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<8){
+            for(int i = 5; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<9){
+            for(int i = 6; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else if (i<10){
+            for(int i = 7; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }else{
+            for(int i = 8; i < 9; i++){
+                len[i] = len[i] << 1;
+                len[i]++;
+            }
+        }
     }
 
     unsigned int tableSize = 2048;
-    int table[tableSize];
+    int table[9][tableSize];
 
     for(int i = 0; i < tableSize; i++){
-        table[i] = 3;
+        for(int j = 0; j < 9; j++){
+            table[j][i] = 3;
+        }
     }
 
+    unsigned int index[9];
     string behavior;
     for(int i = 0; i < input.size(); i++){
         // Now we have to parse the line into it's two pieces
         stringstream s(input.at(i));
         s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
-        unsigned int index = addr % tableSize;
-        index = index ^ globalHist;
+        for(int j = 0; j < 9; j++){
+            index[j] = addr % tableSize;
+            index[j] = index[j] ^ globalHist[j];
+        }
 
         if(behavior == "NT"){
-            globalHist = globalHist<<1;
-            globalHist = globalHist & len;
-            if(table[index] == 0 || table[index] == 1){
-                correctBranchPredictions++;
-                if(table[index] == 1){
-                    table[index]--;
-                }
-            }else{
-                table[index]--;
+            for(int j = 0; j < 9; j++){
+                globalHist[j] = globalHist[j]<<1;
+                globalHist[j] = globalHist[j] & len[j];
             }
-        }else{
-            globalHist = globalHist<<1;
-            globalHist++;
-            globalHist = globalHist & len;
-            if(table[index] == 2 || table[index] == 3){
-                correctBranchPredictions++;
-                if(table[index] == 2){
-                    table[index]++;
+
+            for(int j = 0; j < 9; j++){
+                if(table[j][index[j]] == 0 || table[j][index[j]] == 1){
+                    correctBranchPredictions[j]++;
+                    if(table[j][index[j]] == 1){
+                        table[j][index[j]]--;
+                    }
+                }else{
+                    table[j][index[j]]--;
                 }
-            }else{
-                table[index]++;
+            }
+
+        }else{
+            for(int j = 0; j < 9; j++){
+                globalHist[j] = globalHist[j]<<1;
+                globalHist[j]++;
+                globalHist[j] = globalHist[j] & len[j];
+            }
+
+            for(int j = 0; j < 9; j++){
+                if(table[j][index[j]] == 2 || table[j][index[j]] == 3){
+                    correctBranchPredictions[j]++;
+                    if(table[j][index[j]] == 2){
+                        table[j][index[j]]++;
+                    }
+                }else{
+                    table[j][index[j]]++;
+                }
             }
         }
     }
 
     //change to file output later
-    file<<correctBranchPredictions<<","<<branchCommands<<"; ";
+    file<<correctBranchPredictions[0]<<","<<branchCommands<<"; "<<correctBranchPredictions[1]<<","<<branchCommands<<"; "<<correctBranchPredictions[2]<<","<<branchCommands<<"; "<<correctBranchPredictions[3]<<","<<branchCommands<<"; "<<correctBranchPredictions[4]<<","<<branchCommands<<"; "<<correctBranchPredictions[5]<<","<<branchCommands<<"; "<<correctBranchPredictions[6]<<","<<branchCommands<<"; "<<correctBranchPredictions[7]<<","<<branchCommands<<"; "<<correctBranchPredictions[8]<<","<<branchCommands<<";";
 }
 
 void tournamentPredictor(ofstream &file, const vector<string> &input){
@@ -654,7 +704,7 @@ void BTB(ofstream &file, const vector<string> &input){
 
 int main(int argc, char *argv[]) {
     if(argc != 3){
-        cout<<"Incorrect number of arguments"<<endl;
+        std::cout<<"Incorrect number of arguments"<<endl;
     }
 
     ofstream file;
@@ -669,15 +719,13 @@ int main(int argc, char *argv[]) {
     bimodalTwoBitPredictor(file, inputs);
     file<<endl;
 
-    for(int i = 3; i <= 11; i++){
-        gsharePredictor(file, inputs, i);
-    }
+    gsharePredictor(file, inputs);
     file<<endl;
 
     tournamentPredictor(file, inputs);
 
     BTB(file, inputs);
-    cout<<"Execution Complete"<<endl;
+    std::cout<<"Execution Complete"<<endl;
     file.close();
 
 }
