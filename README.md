@@ -1,5 +1,6 @@
 # BranchPredictor
-
-Developer: Nicolas Said
-BU-ID: nsaid1
-B-Number: B00883312
+<ul>
+    <li>Developer: Nicolas Said</li>
+    <li>BU-ID: nsaid1</li>
+    <li>B-Number: B00883312</li>
+</ul>
