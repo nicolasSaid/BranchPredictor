@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void parse(string in, vector<string> &x){
+void parse(string in, vector<unsigned long long> &x, vector<string> &y, vector<unsigned long long> &z){
     // Temporary variables
     unsigned long long addr;
     string behavior, line;
@@ -18,33 +18,23 @@ void parse(string in, vector<string> &x){
 
     // The following loop will read a line at a time
     while(getline(infile, line)) {
-        // // Now we have to parse the line into it's two pieces
-        // stringstream s(line);
-        // s >> std::hex >> addr >> behavior >> std::hex >> target;
-        // // Now we can output it
-        // cout << addr;
-        // if(behavior == "T") {
-        //     cout << " -> taken, ";
-        // }else {
-        //     cout << " -> not taken, ";
-        // }
-        // cout << "target=" << target << endl;
-        x.push_back(line);
+        // Now we have to parse the line into it's two pieces
+        stringstream s(line);
+        s >> std::hex >> addr >> behavior >> std::hex >> target;
+        // Now we can output it
+        x.push_back(addr);
+        y.push_back(behavior);
+        z.push_back(target);
     }
 }
 
-void alwaysTakenPredictor(ofstream &file, const vector<string> &input){
-    int branchCommands = input.size();
+void alwaysTakenPredictor(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
+    int branchCommands = addr.size();
     int correctBranchPredictions = 0;
-    unsigned long long addr;
-    unsigned long long target;
-    string behavior;
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
-        if(behavior == "T"){
+        if(behavior[i] == "T"){
             correctBranchPredictions++;
         }
     }
@@ -53,18 +43,12 @@ void alwaysTakenPredictor(ofstream &file, const vector<string> &input){
     file<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
 }
 
-void alwaysNotTakenPredictor(ofstream &file, const vector<string> &input){
-    int branchCommands = input.size();
+void alwaysNotTakenPredictor(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
+    int branchCommands = addr.size();
     int correctBranchPredictions = 0;
-    unsigned long long addr;
-    unsigned long long target;
-    string behavior;
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
-        // Now we can output it
-        if(behavior == "NT"){
+        if(behavior[i] == "NT"){
             correctBranchPredictions++;
         }
     }
@@ -73,11 +57,9 @@ void alwaysNotTakenPredictor(ofstream &file, const vector<string> &input){
     file<<correctBranchPredictions<<","<<branchCommands<<";"<<endl;
 }
 
-void bimodalOneBitPredictor(ofstream &file, const vector<string> &input){
-    int branchCommands = input.size();
+void bimodalOneBitPredictor(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
+    int branchCommands = addr.size();
     int correctBranchPredictions[] = {0,0,0,0,0,0,0};
-    unsigned long long addr;
-    unsigned long long target;
 
     int table1[16];
     int table2[32];
@@ -126,21 +108,17 @@ void bimodalOneBitPredictor(ofstream &file, const vector<string> &input){
         }
     }
 
-    string behavior;
     int index[7] = {0,0,0,0,0,0,0};
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
-        // Now we can output it
-        index[0] = addr % 16;
-        index[1] = addr % 32;
-        index[2] = addr % 128;
-        index[3] = addr % 256;
-        index[4] = addr % 512;
-        index[5] = addr % 1024;
-        index[6] = addr % 2048;
-        if(behavior == "NT"){
+        index[0] = addr[i] % 16;
+        index[1] = addr[i] % 32;
+        index[2] = addr[i] % 128;
+        index[3] = addr[i] % 256;
+        index[4] = addr[i] % 512;
+        index[5] = addr[i] % 1024;
+        index[6] = addr[i] % 2048;
+        if(behavior[i] == "NT"){
             if(table1[index[0]] == 0){
                 correctBranchPredictions[0]++;
             }else{
@@ -219,11 +197,9 @@ void bimodalOneBitPredictor(ofstream &file, const vector<string> &input){
     file<<correctBranchPredictions[0]<<","<<branchCommands<<"; "<<correctBranchPredictions[1]<<","<<branchCommands<<"; "<<correctBranchPredictions[2]<<","<<branchCommands<<"; "<<correctBranchPredictions[3]<<","<<branchCommands<<"; "<<correctBranchPredictions[4]<<","<<branchCommands<<"; "<<correctBranchPredictions[5]<<","<<branchCommands<<"; "<<correctBranchPredictions[6]<<","<<branchCommands<<";";
 }
 
-void bimodalTwoBitPredictor(ofstream &file, const vector<string> &input){
-    int branchCommands = input.size();
+void bimodalTwoBitPredictor(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
+    int branchCommands = addr.size();
     int correctBranchPredictions[7] = {0,0,0,0,0,0,0};
-    unsigned long long addr;
-    unsigned long long target;
 
     int table1[16];
     int table2[32];
@@ -272,21 +248,18 @@ void bimodalTwoBitPredictor(ofstream &file, const vector<string> &input){
         }
     }
 
-    string behavior;
     unsigned int index[7];
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
-        index[0] = addr % 16;
-        index[1] = addr % 32;
-        index[2] = addr % 128;
-        index[3] = addr % 256;
-        index[4] = addr % 512;
-        index[5] = addr % 1024;
-        index[6] = addr % 2048;
-        if(behavior == "NT"){
+        index[0] = addr[i] % 16;
+        index[1] = addr[i] % 32;
+        index[2] = addr[i] % 128;
+        index[3] = addr[i] % 256;
+        index[4] = addr[i] % 512;
+        index[5] = addr[i] % 1024;
+        index[6] = addr[i] % 2048;
+        if(behavior[i] == "NT"){
             if(table1[index[0]] == 0 || table1[index[0]] == 1){
                 correctBranchPredictions[0]++;
                 if(table1[index[0]] == 1){
@@ -407,11 +380,9 @@ void bimodalTwoBitPredictor(ofstream &file, const vector<string> &input){
     file<<correctBranchPredictions[0]<<","<<branchCommands<<"; "<<correctBranchPredictions[1]<<","<<branchCommands<<"; "<<correctBranchPredictions[2]<<","<<branchCommands<<"; "<<correctBranchPredictions[3]<<","<<branchCommands<<"; "<<correctBranchPredictions[4]<<","<<branchCommands<<"; "<<correctBranchPredictions[5]<<","<<branchCommands<<"; "<<correctBranchPredictions[6]<<","<<branchCommands<<";";
 }
 
-void gsharePredictor(ofstream &file, const vector<string> &input){
-    int branchCommands = input.size();
+void gsharePredictor(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
+    int branchCommands = addr.size();
     int correctBranchPredictions[9] = {0,0,0,0,0,0,0,0};
-    unsigned long long addr;
-    unsigned long long target;
 
     unsigned int globalHist[9] = {0,0,0,0,0,0,0,0,0};
     unsigned int len[9] = {0,0,0,0,0,0,0,0,0};
@@ -475,18 +446,15 @@ void gsharePredictor(ofstream &file, const vector<string> &input){
     }
 
     unsigned int index[9];
-    string behavior;
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
         for(int j = 0; j < 9; j++){
-            index[j] = addr % tableSize;
+            index[j] = addr[i] % tableSize;
             index[j] = index[j] ^ globalHist[j];
         }
 
-        if(behavior == "NT"){
+        if(behavior[i] == "NT"){
             for(int j = 0; j < 9; j++){
                 globalHist[j] = globalHist[j]<<1;
                 globalHist[j] = globalHist[j] & len[j];
@@ -527,11 +495,9 @@ void gsharePredictor(ofstream &file, const vector<string> &input){
     file<<correctBranchPredictions[0]<<","<<branchCommands<<"; "<<correctBranchPredictions[1]<<","<<branchCommands<<"; "<<correctBranchPredictions[2]<<","<<branchCommands<<"; "<<correctBranchPredictions[3]<<","<<branchCommands<<"; "<<correctBranchPredictions[4]<<","<<branchCommands<<"; "<<correctBranchPredictions[5]<<","<<branchCommands<<"; "<<correctBranchPredictions[6]<<","<<branchCommands<<"; "<<correctBranchPredictions[7]<<","<<branchCommands<<"; "<<correctBranchPredictions[8]<<","<<branchCommands<<";";
 }
 
-void tournamentPredictor(ofstream &file, const vector<string> &input){
-    int branchCommands = input.size();
+void tournamentPredictor(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
+    int branchCommands = addr.size();
     int correctBranchPredictions = 0;
-    unsigned long long addr;
-    unsigned long long target;
 
     //gshare stuff
     unsigned int globalHist = 0;
@@ -557,21 +523,18 @@ void tournamentPredictor(ofstream &file, const vector<string> &input){
     }
 
 
-    string behavior;
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
 
-        unsigned int indexSB = addr % tableSize;
+        unsigned int indexSB = addr[i] % tableSize;
 
-        unsigned int indexG = addr % tableSize;
+        unsigned int indexG = addr[i] % tableSize;
         indexG = indexG ^ globalHist;
 
         unsigned int GCorr, BCorr;
 
-        if(behavior == "NT"){
+        if(behavior[i] == "NT"){
             //gshare start
             globalHist = globalHist<<1;
             globalHist = globalHist & len;
@@ -653,11 +616,9 @@ void tournamentPredictor(ofstream &file, const vector<string> &input){
 }
 
 
-void BTB(ofstream &file, const vector<string> &input){
+void BTB(ofstream &file, const vector<unsigned long long> &addr, const vector<string> &behavior, const vector<unsigned long long> &target){
     int branchCommands = 0;
     int correctBranchPredictions = 0;
-    unsigned long long addr;
-    unsigned long long target;
 
     unsigned int tableSize = 512;
     int table[tableSize];
@@ -667,34 +628,30 @@ void BTB(ofstream &file, const vector<string> &input){
         btbTable[i] = 0;
     }
 
-
-    string behavior;
-    for(int i = 0; i < input.size(); i++){
+    for(int i = 0; i < addr.size(); i++){
         // Now we have to parse the line into it's two pieces
-        stringstream s(input.at(i));
-        s >> std::hex >> addr >> behavior >> std::hex >> target;
         // Now we can output it
-        unsigned int index = addr % tableSize;
-        if(behavior == "NT"){
+        unsigned int index = addr[i] % tableSize;
+        if(behavior[i] == "NT"){
             if(table[index] == 0){
                 //correctBranchPredictions++;
             }else{
                 branchCommands++;
                 table[index] = 0;
-                if(btbTable[index] == target){
+                if(btbTable[index] == target[i]){
                     correctBranchPredictions++;
                 }
             }
         }else{
             if(table[index] == 1){
                 branchCommands++;
-                if(btbTable[index] == target){
+                if(btbTable[index] == target[i]){
                     correctBranchPredictions++;
                 }
             }else{
                 table[index] = 1;
             }
-            btbTable[index] = target;
+            btbTable[index] = target[i];
         }
     }
 
@@ -709,22 +666,25 @@ int main(int argc, char *argv[]) {
 
     ofstream file;
     file.open(argv[2]);
-    vector<string> inputs;
-    parse(argv[1], inputs);
-    alwaysTakenPredictor(file, inputs);
-    alwaysNotTakenPredictor(file, inputs);
+    vector<unsigned long long> addr;
+    vector<string> behavior;
+    vector<unsigned long long> target;
 
-    bimodalOneBitPredictor(file, inputs);
+    parse(argv[1], addr, behavior, target);
+    alwaysTakenPredictor(file, addr, behavior, target);
+    alwaysNotTakenPredictor(file, addr, behavior, target);
+
+    bimodalOneBitPredictor(file, addr, behavior, target);
     file<<endl;
-    bimodalTwoBitPredictor(file, inputs);
+    bimodalTwoBitPredictor(file, addr, behavior, target);
     file<<endl;
 
-    gsharePredictor(file, inputs);
+    gsharePredictor(file, addr, behavior, target);
     file<<endl;
 
-    tournamentPredictor(file, inputs);
+    tournamentPredictor(file, addr, behavior, target);
 
-    BTB(file, inputs);
+    BTB(file, addr, behavior, target);
     std::cout<<"Execution Complete"<<endl;
     file.close();
 
